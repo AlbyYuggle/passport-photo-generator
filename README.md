@@ -1,7 +1,7 @@
 # passport-photo-generator
 Generate photos that satisfy US Passport requriements using Node.js, Express.js, and HTML to display the website with python, opencv, and U-2 Net for image processing.
 
-Directions for use:
+Directions for local use:
 
 Clone the repo and then either:
 
@@ -11,7 +11,7 @@ OR
 
 2) Modify model_name in rotatedetect.py to "u2netp" to use the smaller already included model(u2netp.pth) instead.
 
-then, initialize the server using the app.js file.
+then, initialize the server using the app.js file and access the site through http://localhost:3000/.
 
 ## U-2 Net Citation:
 
