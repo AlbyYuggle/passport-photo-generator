@@ -153,11 +153,11 @@ def createMask():
 
     image_dir = os.path.join(os.getcwd(), 'test_data')
     prediction_dir = os.path.join(os.getcwd(), 'results/')
-    print(prediction_dir)
+    #print(prediction_dir)
     model_dir = os.path.join(os.getcwd(), model_name + '.pth')
 
     img_name_list = glob.glob(image_dir + os.sep + '*')
-    print(img_name_list)
+    #print(img_name_list)
 
     # --------- 2. dataloader ---------
     #1. dataloader
@@ -172,10 +172,10 @@ def createMask():
 
     # --------- 3. model define ---------
     if(model_name=='u2net'):
-        print("...load U2NET---173.6 MB")
+        #print("...load U2NET---173.6 MB")
         net = U2NET(3,1)
     elif(model_name=='u2netp'):
-       print("...load U2NEP---4.7 MB")
+       #print("...load U2NEP---4.7 MB")
        net = U2NETP(3,1)
 
     if torch.cuda.is_available():
@@ -188,7 +188,7 @@ def createMask():
     # --------- 4. inference for each image ---------
     for i_test, data_test in enumerate(test_salobj_dataloader):
 
-        print("inferencing:",img_name_list[i_test].split(os.sep)[-1])
+        #print("inferencing:",img_name_list[i_test].split(os.sep)[-1])
 
         inputs_test = data_test['image']
         inputs_test = inputs_test.type(torch.FloatTensor)
@@ -229,12 +229,17 @@ def createMask():
         
         
 
+def main():
+    valid, face, eye1, eye2, img = checkValidAndRotate(addBorder(createMask()))
+    if img is None:
+        print("failed")
+        sys.stdout.flush()
+        sys.exit(1)
+    cropped_img = img[int(face[1]- 0.4 * (face[3])):int(face[1] + 1.6 * face[3]), int(face[0]+face[2]/2 - face[3]):int(face[0]+face[2]/2 + face[3])]
+    resized_img = cv2.resize(cropped_img, (600,600))
+    cv2.imwrite("./results/res.png", resized_img)
+    print("success")
+    sys.stdout.flush()
 
-valid, face, eye1, eye2, img = checkValidAndRotate(addBorder(createMask()))
-cropped_img = img[int(face[1]- 0.4 * (face[3])):int(face[1] + 1.6 * face[3]), int(face[0]+face[2]/2 - face[3]):int(face[0]+face[2]/2 + face[3])]
-resized_img = cv2.resize(cropped_img, (600,600))
-cv2.imshow("finalimg", resized_img)
-cv2.waitKey()
-cv2.destroyAllWindows()
-
-
+if __name__ == '__main__':
+    main()
