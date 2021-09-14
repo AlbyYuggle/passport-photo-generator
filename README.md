@@ -3,11 +3,15 @@ Generate photos that satisfy US Passport requriements using Node.js, Express.js,
 
 Directions for use:
 
+Clone the repo and then either:
+
 1) Download the full Salient Object Detection U-2 Net model from https://drive.google.com/file/d/1ao1ovG1Qtx4b7EoskHXmi2E9rp5CHLcZ/view and add to your main directory 
 
 OR 
 
 2) Modify model_name in rotatedetect.py to "u2netp" to use the smaller already included model(u2netp.pth) instead.
+
+then, initialize the server using the app.js file.
 
 ## U-2 Net Citation:
 
