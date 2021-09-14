@@ -1,18 +1,21 @@
-var http = require('http');
+const express = require('express');
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World!');
-}).listen(8080);
+const app = express();
 
-// Parse URL-encoded bodies (as sent by HTML forms)
-app.use(express.urlencoded());
+//register view engine
+app.set('view engine', 'ejs');
 
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
 
-// Access the parse results as request.body
-app.post('/', function(request, response){
-    console.log(request.body.user.name);
-    console.log(request.body.user.email);
+//listen to requests
+app.listen(3000);
+
+app.get('/', (req, res) => {
+    //res.send('<p> home page </p>'); //automatically infers content type and status code
+    res.sendFile('./views/index.html', {root: __dirname});
 });
+
+//404 page
+app.use((req, res) => {
+    res.sendFile('./views/404.html', {root: __dirname});
+});
+//fires if nothing yet has worked, needs to be at the end
