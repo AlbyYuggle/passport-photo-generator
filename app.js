@@ -4,7 +4,7 @@ const multer = require("multer");
 const { threadId } = require('worker_threads');
 const PythonShell = require('python-shell');
 const app = express();
-var fs = require('fs');
+const fs = require('fs');
 
 //register view engine
 app.set('view engine', 'ejs');
@@ -50,6 +50,20 @@ var upload = multer({
 }).single("mypic");       
   
 app.get("/",function(req,res){
+  fs.mkdir('./test_data', function(err){
+    if(err){
+      console.log(err)
+    }else{
+      console.log('created test_data')
+    }
+  })
+  fs.mkdir('./results', function(err){
+    if(err){
+      console.log(err)
+    }else{
+      console.log('created results')
+    }
+  })
     res.render("upload");
 })
     
@@ -83,74 +97,24 @@ app.post("/uploadProfilePicture", async function (req, res, next) {
               //res.sendFile('./views/index.html', {root: __dirname});
             }else{
               res.send("Couldn't detect face in image. Please try another photo.");
-              // fs.unlink('mynewfile2.txt', function (err) {
-              //   if (err) throw err;
-              //   console.log('File deleted!');
-              // });
             }
+            fs.rm('test_data', { recursive: true }, (err) => {
+              if (err) {
+                console.log(err);
+              }
+          
+              console.log(`test_data is deleted!`);
+            });
+            fs.rm('results', { recursive: true }, (err) => {
+              if (err) {
+                console.log(err);
+              }
+          
+              console.log(`results is cleared!`);
+            });
           });
         }
     })
 })
 
-app.get('/view_image', (req, res) => {
-  console.log('/');
-    //res.send('<p> home page </p>'); //automatically infers content type and status code
-    res.render('index', {root: __dirname});
-});
-
-app.get('/', (req, res) => {
-  console.log('/');
-    //res.send('<p> home page </p>'); //automatically infers content type and status code
-    res.sendFile('./views/upload.html', {root: __dirname});
-});
-
-app.post('/upload', async (req, res) => {
-  console.log('upload');
-  //res.sendFile('./views/upload.html', {root: __dirname});
-  try {
-      console.log(req.files)
-      if(!req.files) {
-          res.send({
-              status: false,
-              message: 'No file uploaded'
-          });
-      } else {
-          //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-          let photo = req.files.filename;
-          
-          //Use the mv() method to place the file in upload directory (i.e. "uploads")
-          photo.mv('./test_data/' + photo.name);
-
-          //send response
-          res.send({
-              status: true,
-              message: 'File is uploaded',
-              data: {
-                  name: photo.name,
-                  mimetype: photo.mimetype,
-                  size: photo.size
-              }
-          });
-          console.log('we have reached somewhere');
-          const spawn = require("child_process").spawn;
-          const pythonProcess = spawn('python',["./rotatedetect.py"]);
-          pythonProcess.stdout.on('data', (data) => {
-            if (data == "success"){
-              res.sendFile('./views/index.html', {root: __dirname});
-            }else{
-              res.write("Couldn't detect face in image. Please try another photo.");
-            }
-        });
-
-      }
-  } catch (err) {
-      res.status(500).send(err);
-  }
-});
-
-//404 page
-app.use((req, res) => {
-    res.sendFile('./views/404.html', {root: __dirname});
-});
 //fires if nothing yet has worked, needs to be at the end
