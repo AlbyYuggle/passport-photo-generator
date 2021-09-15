@@ -50,25 +50,22 @@ var upload = multer({
 }).single("mypic");       
   
 app.get("/",function(req,res){
+    res.render("upload");
+})
+    
+app.post("/uploadProfilePicture", async function (req, res, next) {
   fs.mkdir('./test_data', function(err){
     if(err){
-      console.log(err)
     }else{
       console.log('created test_data')
     }
   })
   fs.mkdir('./results', function(err){
     if(err){
-      console.log(err)
     }else{
       console.log('created results')
     }
   })
-    res.render("upload");
-})
-    
-app.post("/uploadProfilePicture", async function (req, res, next) {
-        
     // Error MiddleWare for multer file upload, so if any
     // error occurs, the image would not be uploaded!
     upload(req,res,async function(err) {
@@ -100,14 +97,13 @@ app.post("/uploadProfilePicture", async function (req, res, next) {
             }
             fs.rm('test_data', { recursive: true }, (err) => {
               if (err) {
-                console.log(err);
               }
           
               console.log(`test_data is deleted!`);
             });
             fs.rm('results', { recursive: true }, (err) => {
               if (err) {
-                console.log(err);
+                console.log(err)
               }
           
               console.log(`results is cleared!`);
