@@ -4,6 +4,24 @@
     "express": "^4.17.1",
     "multer": "^1.4.3",
     "nodemon": "^2.0.12",
-    "path": "^0.12.7"
-  }
+    "path": "^0.12.7",
+    "python-shell": "^3.0.0"
+  },
+  "name": "passport-photo-generator",
+  "description": "Generate photos that satisfy US Passport requriements",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlbyYuggle/passport-photo-generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlbyYuggle/passport-photo-generator/issues"
+  },
+  "homepage": "https://github.com/AlbyYuggle/passport-photo-generator#readme"
 }

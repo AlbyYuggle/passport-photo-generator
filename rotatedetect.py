@@ -230,6 +230,7 @@ def createMask():
         
 
 def main():
+    print("called")
     valid, face, eye1, eye2, img = checkValidAndRotate(addBorder(createMask()))
     if img is None:
         print("failed")

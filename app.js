@@ -2,7 +2,9 @@ const express = require('express');
 const path = require("path")
 const multer = require("multer");
 const { threadId } = require('worker_threads');
+const PythonShell = require('python-shell');
 const app = express();
+var fs = require('fs');
 
 //register view engine
 app.set('view engine', 'ejs');
@@ -51,11 +53,11 @@ app.get("/",function(req,res){
     res.render("upload");
 })
     
-app.post("/uploadProfilePicture",function (req, res, next) {
+app.post("/uploadProfilePicture", async function (req, res, next) {
         
     // Error MiddleWare for multer file upload, so if any
     // error occurs, the image would not be uploaded!
-    upload(req,res,function(err) {
+    upload(req,res,async function(err) {
   
         if(err) {
   
@@ -67,21 +69,24 @@ app.post("/uploadProfilePicture",function (req, res, next) {
         else {
   
             // SUCCESS, image successfully uploaded
-            res.send("Success, Image uploaded!")
-            console.log('we have reached somewhere');
+            //res.send("Success, Image uploaded! Please wait around 30 seconds until we generate your photo!")
             const spawn = require("child_process").spawn;
-            console.log('we have reached somewhere 2');
-
-            const pythonProcess = spawn('python',["rotatedetect.py"]);
-            console.log('we have reached somewhere 3');
+            console.log('reached')
+            const pythonProcess = spawn('python',["rotatedetect.py"]); 
+            
             pythonProcess.stdout.on('data', (data) => {
               console.log(data.toString())
             if (data.toString() != "failed"){
               console.log("reached good ending");
-              res.redirect('/view_image');
+              //res.send("Successfully created image")
+              res.sendFile('/results/res.png', {root: __dirname});
               //res.sendFile('./views/index.html', {root: __dirname});
             }else{
               res.send("Couldn't detect face in image. Please try another photo.");
+              // fs.unlink('mynewfile2.txt', function (err) {
+              //   if (err) throw err;
+              //   console.log('File deleted!');
+              // });
             }
           });
         }
@@ -91,7 +96,7 @@ app.post("/uploadProfilePicture",function (req, res, next) {
 app.get('/view_image', (req, res) => {
   console.log('/');
     //res.send('<p> home page </p>'); //automatically infers content type and status code
-    res.sendFile('./views/index.html', {root: __dirname});
+    res.render('index', {root: __dirname});
 });
 
 app.get('/', (req, res) => {
