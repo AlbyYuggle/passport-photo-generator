@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
   }
 })
 
-const maxSize = 1 * 1000 * 1000;
+const maxSize = 30 * 1000 * 1000;
     
 var upload = multer({ 
     storage: storage,
@@ -87,14 +87,26 @@ app.post("/uploadProfilePicture", async function (req, res, next) {
             
             pythonProcess.stdout.on('data', (data) => {
               console.log(data.toString())
-            if (data.toString() != "failed"){
-              console.log("reached good ending");
-              //res.send("Successfully created image")
-              res.sendFile('/results/res.png', {root: __dirname});
-              //res.sendFile('./views/index.html', {root: __dirname});
-            }else{
-              res.send("Couldn't detect face in image. Please try another photo.");
-            }
+              if(data.toString().charAt(0) == "1"){
+                console.log("reached good ending");
+                res.sendFile('/results/res.png', {root: __dirname});
+              }else{
+                console.log("qeuueeuueueu");
+                res.sendFile('/views/error_message.html', {root: __dirname});
+              }
+            //   fs.readdir('/results/', function(err, files) {
+            //     if (err) {
+            //        // some sort of error
+            //     } else {
+            //        if (!files.length) {
+            //         console.log("reached good ending");
+            //         res.sendFile('/results/res.png', {root: __dirname});
+            //        } else {
+            //         console.log("qeuueeuueueu")
+            //         res.send("Couldn't detect face in image. Please try another photo.");
+            //       }
+            //     }
+            // });
             fs.rm('test_data', { recursive: true }, (err) => {
               if (err) {
               }
@@ -103,7 +115,6 @@ app.post("/uploadProfilePicture", async function (req, res, next) {
             });
             fs.rm('results', { recursive: true }, (err) => {
               if (err) {
-                console.log(err)
               }
           
               console.log(`results is cleared!`);

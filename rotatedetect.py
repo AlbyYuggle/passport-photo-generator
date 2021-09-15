@@ -230,16 +230,15 @@ def createMask():
         
 
 def main():
-    print("called")
     valid, face, eye1, eye2, img = checkValidAndRotate(addBorder(createMask()))
     if img is None:
-        print("failed")
+        print("0")
         sys.stdout.flush()
         sys.exit(1)
     cropped_img = img[int(face[1]- 0.4 * (face[3])):int(face[1] + 1.6 * face[3]), int(face[0]+face[2]/2 - face[3]):int(face[0]+face[2]/2 + face[3])]
     resized_img = cv2.resize(cropped_img, (600,600))
     cv2.imwrite("./results/res.png", resized_img)
-    print("success")
+    print("1")
     sys.stdout.flush()
 
 if __name__ == '__main__':
